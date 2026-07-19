@@ -17,10 +17,12 @@ The approval comment binds:
 - the single action `approve_contract_release`;
 - approval protocol version `1`.
 
-The private release workflow re-fetches the public comment immediately before
-signing and publishing. It checks the immutable numeric author ID, canonical
-body, freshness and all bound release values. A coding agent may prepare the
-request, but cannot author the trusted approval comment.
+The private release workflow performs two separate live checks: once
+immediately before signing and again immediately before publishing. It checks
+the immutable numeric author ID, the current case-normalized login, the parent
+issue, canonical body, timestamps, visibility, freshness and all bound release
+values. A coding agent may prepare the request, but cannot author the trusted
+approval comment.
 
 See [the approval protocol](docs/APPROVAL-PROTOCOL.md).
 
