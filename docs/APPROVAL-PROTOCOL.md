@@ -46,27 +46,38 @@ The private release workflow must reject unless all conditions hold:
 7. GraphQL reports that the comment is not minimized and has never been edited;
 8. the target source SHA is still the head of private Contracts `main`;
 9. repository-level immutable releases remain enabled;
-10. before the signing gate, the release tag and release do not exist after an
-    optional draft has been accepted only when its source, approval, CI
-    provenance and every asset digest exactly match, then normalized safely;
+10. before the signing gate, no release tag, draft or published release exists;
+    the workflow never adopts, deletes or rewrites pre-existing release state;
 11. the signed release manifest binds the ledger repository, immutable issue
     ID, issue number and URL, comment node ID, numeric ID and URL, author ID and
     observed canonical login, `created_at`, `updated_at`, canonical body digest,
     source SHA, version, tag, Main-CI run and artifact provenance, and the
     signing-gate verification timestamp;
-12. the exact package bytes and checksums still match the bound successful
-    Contracts `main` CI artifact, and uploaded release asset sizes and SHA-256
-    digests match the signed release manifest;
+12. at the first gate, the exact local package bytes still match the bound
+    successful Contracts `main` CI artifact; only after the signed release
+    manifest and `SHA256SUMS` exist may the workflow create its own draft and
+    upload the base release assets;
 13. immediately before publication, the only existing release state is the
-    exact draft created from that signed evidence; a separate signed
-    publication attestation binds the second verification timestamp, approval
-    and issue evidence, source SHA, tag, draft ID, `SHA256SUMS` digest and exact
-    draft-asset sizes and digests.
+    exact draft created by this workflow run; the complete approval, issue,
+    comment, Contracts `main`, CI-provenance and immutable-release checks all
+    run again;
+14. a separate signed publication attestation binds `publishVerifiedAt`, the
+    ledger repository, immutable numeric issue ID, issue number and URL,
+    comment node ID, numeric ID and URL, author ID and observed login,
+    `created_at`, `updated_at`, body digest, source SHA, version, tag, draft ID,
+    `SHA256SUMS` digest, and every base asset name, size and SHA-256 digest;
+15. the publication-attestation payload and its Sigstore bundle are excluded
+    from their own bound base-asset set. After uploading exactly those two
+    evidence files, a final read-only check proves that all base assets are
+    unchanged and that no other asset was added before immutable publication.
 
-The checks run as two distinct, non-circular gates. The first gate produces the
-signed release manifest, checksums and draft. The second gate re-fetches the
-approval and source state, accepts only that exact draft, and produces the
-separately signed publication attestation before immutable publication.
+The checks run as two distinct, non-circular gates. The first gate validates
+the Main-CI bytes, produces the signed release manifest and checksums, then
+creates a new draft. The second gate repeats the complete live validation,
+accepts only that run's exact draft, and produces the separately signed
+publication attestation before a final read-only asset check and immutable
+publication. Any pre-existing draft, tag or release fails closed and requires
+manual investigation; the workflow never mutates it.
 Editing, deleting, minimizing or hiding an approval makes either gate fail. An
 old approval cannot authorize a different source SHA, tag or version.
 
@@ -77,5 +88,6 @@ canonical comment. Robert must independently compare those values with the
 reviewed Contracts `main` commit before posting from `Bumblebob-GMZ`.
 
 After a successful immutable release, the request issue may be closed. The
-GitHub release, Sigstore bundle and release manifest remain the authoritative
-release evidence.
+GitHub immutable release, `SHA256SUMS`, signed release manifest, both Sigstore
+bundles and signed publication attestation remain the authoritative release
+evidence.
