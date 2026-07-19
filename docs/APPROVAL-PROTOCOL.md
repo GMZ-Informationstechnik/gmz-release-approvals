@@ -48,11 +48,11 @@ The private release workflow must reject unless all conditions hold:
 9. repository-level immutable releases remain enabled;
 10. before the signing gate, no release tag, draft or published release exists;
     the workflow never adopts, deletes or rewrites pre-existing release state;
-11. the signed release manifest binds the ledger repository, immutable issue
-    ID, issue number and URL, comment node ID, numeric ID and URL, author ID and
-    observed canonical login, `created_at`, `updated_at`, canonical body digest,
-    source SHA, version, tag, Main-CI run and artifact provenance, and the
-    signing-gate verification timestamp;
+11. the signed release manifest binds the ledger repository, immutable numeric
+    issue ID, issue number and URL, comment node ID, numeric ID and URL, author
+    ID and observed canonical login, `created_at`, `updated_at`, canonical body
+    digest, source SHA, version, tag, Main-CI run and artifact provenance, and
+    the signing-gate verification timestamp;
 12. at the first gate, the exact local package bytes still match the bound
     successful Contracts `main` CI artifact; only after the signed release
     manifest and `SHA256SUMS` exist may the workflow create its own draft and
@@ -61,15 +61,21 @@ The private release workflow must reject unless all conditions hold:
     exact draft created by this workflow run; the complete approval, issue,
     comment, Contracts `main`, CI-provenance and immutable-release checks all
     run again;
-14. a separate signed publication attestation binds `publishVerifiedAt`, the
+14. before creating the publication attestation, every remote base-asset name,
+    size and SHA-256 digest exactly matches both the signed Gate-1 release
+    manifest and `SHA256SUMS`;
+15. a separate signed publication attestation binds `publishVerifiedAt`, the
     ledger repository, immutable numeric issue ID, issue number and URL,
     comment node ID, numeric ID and URL, author ID and observed login,
-    `created_at`, `updated_at`, body digest, source SHA, version, tag, draft ID,
-    `SHA256SUMS` digest, and every base asset name, size and SHA-256 digest;
-15. the publication-attestation payload and its Sigstore bundle are excluded
+    `created_at`, `updated_at`, canonical body digest, source SHA, version, tag,
+    draft ID, `SHA256SUMS` digest, and every base asset name, size and SHA-256
+    digest;
+16. the publication-attestation payload and its Sigstore bundle are excluded
     from their own bound base-asset set. After uploading exactly those two
-    evidence files, a final read-only check proves that all base assets are
-    unchanged and that no other asset was added before immutable publication.
+    evidence files, a final read-only check proves that all base assets remain
+    unchanged, both remote evidence files match the exact locally signed bytes
+    by size and SHA-256 digest, and no other asset was added before immutable
+    publication.
 
 The checks run as two distinct, non-circular gates. The first gate validates
 the Main-CI bytes, produces the signed release manifest and checksums, then
