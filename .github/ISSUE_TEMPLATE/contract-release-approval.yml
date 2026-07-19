@@ -1,0 +1,42 @@
+name: Contract release approval request
+description: Request a human-bound immutable GMZ Contracts package release
+title: "[contracts-release] "
+labels:
+  - contracts-release-approval
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is only a request. It becomes usable approval evidence only
+        after `Bumblebob-GMZ` posts the exact canonical JSON comment documented
+        in `docs/APPROVAL-PROTOCOL.md`. Never include secrets or customer data.
+  - type: input
+    id: source_sha
+    attributes:
+      label: Exact Contracts main SHA
+      description: Lowercase 40-character commit SHA reviewed for release
+      placeholder: 0123456789abcdef0123456789abcdef01234567
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Exact package version
+      placeholder: 0.1.0a1
+    validations:
+      required: true
+  - type: input
+    id: tag
+    attributes:
+      label: Exact immutable release tag
+      placeholder: contracts-python-v0.1.0a1
+    validations:
+      required: true
+  - type: textarea
+    id: approval_comment
+    attributes:
+      label: Canonical approval comment for Bumblebob-GMZ
+      description: One-line JSON generated from the exact values above
+      render: json
+    validations:
+      required: true

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Protocol documentation
+    url: https://github.com/GMZ-Informationstechnik/gmz-release-approvals/blob/main/docs/APPROVAL-PROTOCOL.md
+    about: Read the exact public approval protocol before creating a request.
