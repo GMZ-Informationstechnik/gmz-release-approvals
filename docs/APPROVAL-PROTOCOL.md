@@ -1,4 +1,4 @@
-# Contract Release Approval Protocol v1
+# Contract Release Approval Protocol v2
 
 ## Purpose
 
@@ -24,10 +24,13 @@ The comment is one line of UTF-8 JSON without a Markdown code fence, leading or
 trailing whitespace, or additional prose:
 
 ```text
-{"action":"approve_contract_release","approval_version":1,"repository":"GMZ-Informationstechnik/gmz-platform-contracts","source_sha":"<40 lowercase hex characters>","tag":"contracts-python-v<package version>","version":"<package version>"}
+{"action":"approve_contract_release","approval_version":2,"immutable_releases_enabled":true,"repository":"GMZ-Informationstechnik/gmz-platform-contracts","source_sha":"<40 lowercase hex characters>","tag":"contracts-python-v<package version>","version":"<package version>"}
 ```
 
-All keys are required and no additional key is allowed.
+All seven keys are required, `approval_version` must be the JSON number `2`,
+`immutable_releases_enabled` must be the JSON literal `true`, and no additional
+key is allowed. Key order, whitespace and escaping must match the canonical
+one-line JSON shown above.
 
 ## Required verifier checks
 
@@ -38,9 +41,11 @@ The private release workflow must reject unless all conditions hold:
 2. the immutable GitHub author ID is exactly `262149236`;
 3. the author login currently resolves case-insensitively to
    `Bumblebob-GMZ`;
-4. the comment body is canonical JSON and contains exactly the six fields
-   above;
-5. repository, source SHA, version and tag exactly equal the release inputs;
+4. the comment body is canonical JSON and contains exactly the seven fields
+   above, including `approval_version:2` and
+   `immutable_releases_enabled:true`;
+5. repository, source SHA, version, tag and immutable-release assertion exactly
+   equal the release inputs and prerequisites;
 6. `created_at` equals `updated_at`, neither timestamp is in the future and
    `now - created_at` is no more than 24 hours;
 7. GraphQL reports that the comment is not minimized and has never been edited;

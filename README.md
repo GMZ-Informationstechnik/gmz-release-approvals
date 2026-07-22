@@ -15,7 +15,8 @@ The approval comment binds:
 - the exact immutable source commit SHA;
 - the exact package version and release tag;
 - the single action `approve_contract_release`;
-- approval protocol version `1`.
+- approval protocol version `2`; and
+- an explicit assertion that immutable releases are enabled.
 
 The private release workflow performs two separate live checks: once
 immediately before signing and again immediately before publishing. It checks
@@ -25,6 +26,10 @@ values. A coding agent may prepare the request, but cannot author the trusted
 approval comment.
 
 See [the approval protocol](docs/APPROVAL-PROTOCOL.md).
+
+The ledger documentation is intentionally kept in lockstep with the private
+Contracts verifier. A request that shows another protocol version or omits the
+immutable-release assertion is not a valid approval candidate.
 
 ## Public information
 
